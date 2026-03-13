@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: certchain-backend
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node index.js
+    envVars:
+      - key: PORT
+        value: 3001
+      - key: VITE_SUPABASE_URL
+        fromContext: parameter
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        fromContext: parameter
+      - key: JWT_SECRET
+        fromContext: parameter
+      - key: SUPABASE_JWT_SECRET
+        fromContext: parameter
+      - key: FRONTEND_URL
+        fromContext: parameter
