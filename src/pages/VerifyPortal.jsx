@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { ShieldCheck, FileText, UploadCloud, XCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
-import gsap from 'gsap';
 import CertPDFExport from '../components/CertPDFExport';
 
 export default function VerifyPortal() {
@@ -44,15 +43,6 @@ export default function VerifyPortal() {
       if (data.success) {
         toast.dismiss(toastId);
         setResult(data);
-        
-        // Ensure DOM has time to paint the result container before animating
-        setTimeout(() => {
-          gsap.fromTo("#result-badge", 
-            { scale: 0.8, opacity: 0, y: 30 }, 
-            { scale: 1, opacity: 1, y: 0, duration: 0.8, ease: "back.out(1.7)" }
-          );
-        }, 50);
-
       } else {
         toast.error(data.error || "Verification engine error", { id: toastId });
       }

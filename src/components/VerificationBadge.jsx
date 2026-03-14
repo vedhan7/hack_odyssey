@@ -1,25 +1,13 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { ShieldCheck, XCircle, AlertTriangle, ExternalLink } from 'lucide-react';
-import gsap from 'gsap';
 
 export default function VerificationBadge({ result, onReset }) {
-  const badgeRef = useRef();
-
-  useEffect(() => {
-    // GSAP Animation for dramatic reveal
-    if (badgeRef.current) {
-      gsap.fromTo(badgeRef.current, 
-        { scale: 0.8, opacity: 0, y: 30 }, 
-        { scale: 1, opacity: 1, y: 0, duration: 0.8, ease: "back.out(1.7)" }
-      );
-    }
-  }, [result]);
 
   if (!result) return null;
 
   if (!result.valid) {
     return (
-      <div ref={badgeRef} className="glass-card p-8 rounded-2xl w-full max-w-2xl mx-auto border-2 border-danger shadow-[0_0_30px_rgba(239,68,68,0.3)] bg-danger/5">
+      <div className="glass-card p-8 rounded-2xl w-full max-w-2xl mx-auto border-2 border-danger shadow-[0_0_30px_rgba(239,68,68,0.3)] bg-danger/5">
         <div className="flex flex-col items-center justify-center text-center">
           <div className="bg-danger/20 p-4 rounded-full mb-6">
             <XCircle className="w-16 h-16 text-danger" />
@@ -41,7 +29,7 @@ export default function VerificationBadge({ result, onReset }) {
   const { chainData, dbData } = result;
   
   return (
-    <div ref={badgeRef} className="glass-card p-8 rounded-2xl w-full max-w-2xl mx-auto border-2 border-success shadow-[0_0_30px_rgba(34,197,94,0.2)] relative overflow-hidden">
+    <div className="glass-card p-8 rounded-2xl w-full max-w-2xl mx-auto border-2 border-success shadow-[0_0_30px_rgba(34,197,94,0.2)] relative overflow-hidden">
       {/* Success Confetti Background Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-success/20 rounded-full blur-[100px] pointer-events-none"></div>
 
