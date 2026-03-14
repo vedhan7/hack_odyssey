@@ -1,3 +1,6 @@
+import React, { useState } from 'react';
+import { ShieldCheck, FileText, UploadCloud, XCircle } from 'lucide-react';
+import toast from 'react-hot-toast';
 import gsap from 'gsap';
 import CertPDFExport from '../components/CertPDFExport';
 
