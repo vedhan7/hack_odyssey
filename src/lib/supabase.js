@@ -12,7 +12,11 @@ if (!supabaseUrl || !supabaseAnonKey) {
 export const supabase = supabaseUrl && supabaseAnonKey 
   ? createClient(supabaseUrl, supabaseAnonKey)
   : { 
-      auth: { getSession: async () => ({ data: { session: null } }), onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }) },
+      auth: { 
+        getSession: async () => ({ data: { session: null } }), 
+        onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
+        signInWithOAuth: async () => ({ error: new Error("Environment configuration error: VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are missing.") })
+      },
       from: () => ({ select: () => ({ eq: () => ({ single: async () => ({ data: null, error: null }) }) }) })
     };
 
