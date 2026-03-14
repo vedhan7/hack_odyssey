@@ -36,9 +36,16 @@ router.post('/upload', verifyAdminToken, upload.single('document'), async (req, 
     // 1. Compute EXACT hash of the uploaded PDF using node's native crypto on the server
     const fileHash = await generateFileHash(file.path);
 
+    if (!supabaseAdmin) {
+      console.error("Supabase Admin client not initialized");
+      return res.status(500).json({ success: false, error: 'Database connection not configured' });
+    }
+
     // 2. Insert into REAL Supabase Database
     const certId = "CRT-" + new Date().getFullYear() + "-" + Math.random().toString(36).substring(2, 6).toUpperCase();
     
+    console.log(`Inserting certificate ${certId} for ${studentName} issued by ${req.admin.id}`);
+
     const { data: dbRecord, error: dbError } = await supabaseAdmin
       .from('certificates')
       .insert([{
@@ -56,7 +63,7 @@ router.post('/upload', verifyAdminToken, upload.single('document'), async (req, 
 
     if (dbError) {
       console.error("Database Insert Error:", dbError);
-      return res.status(500).json({ success: false, error: 'Database capture failed' });
+      return res.status(500).json({ success: false, error: `Database capture failed: ${dbError.message}` });
     }
 
     // Return the response
@@ -76,6 +83,10 @@ router.post('/upload', verifyAdminToken, upload.single('document'), async (req, 
 // [AUTH REQUIRED] GET ALL CERTIFICATES
 // --------------------------------------------------------------------------
 router.get('/certificates', verifyAdminToken, async (req, res) => {
+  if (!supabaseAdmin) {
+    return res.status(500).json({ success: false, error: 'Database connection not configured' });
+  }
+
   const { data: certificates, error } = await supabaseAdmin
     .from('certificates')
     .select('*')
@@ -83,7 +94,8 @@ router.get('/certificates', verifyAdminToken, async (req, res) => {
     .order('created_at', { ascending: false });
 
   if (error) {
-    return res.status(500).json({ success: false, error: 'Failed to fetch certificates' });
+    console.error("Fetch certificates error:", error);
+    return res.status(500).json({ success: false, error: `Failed to fetch certificates: ${error.message}` });
   }
 
   res.json({ success: true, certificates });
