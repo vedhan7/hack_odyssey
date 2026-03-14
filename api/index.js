@@ -32,11 +32,9 @@ app.get('/api/health', (req, res) => {
 });
 
 // Import backend routes
-const authRoutes = require('../server/routes/authRoutes');
 const adminRoutes = require('../server/routes/adminRoutes');
 const verifyRoutes = require('../server/routes/verifyRoutes');
 
-app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/verify', verifyRoutes);
 
