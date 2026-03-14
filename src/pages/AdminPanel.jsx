@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Shield, Key, Upload, FileText, CheckCircle, LogOut } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { supabase } from '../lib/supabase';
+import { useNavigate } from 'react-router-dom';
 
 export default function AdminPanel() {
   const [session, setSession] = useState(null);
@@ -13,32 +13,29 @@ export default function AdminPanel() {
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [certificates, setCertificates] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setLoading(false);
-      if (session) fetchCertificates(session.access_token);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      if (session) fetchCertificates(session.access_token);
-    });
-
-    return () => subscription.unsubscribe();
+    const sessionStr = localStorage.getItem('certchain_session');
+    if (sessionStr) {
+      const parsed = JSON.parse(sessionStr);
+      setSession(parsed);
+      fetchCertificates();
+    }
+    setLoading(false);
   }, []);
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
+  const handleLogout = () => {
+    localStorage.removeItem('certchain_session');
+    toast.success('Logged out');
+    navigate('/login');
   };
 
-  const fetchCertificates = async (authToken) => {
-    // If it's empty string we are on the same domain (Vercel)
+  const fetchCertificates = async () => {
     const API_URL = import.meta.env.VITE_API_URL !== undefined ? import.meta.env.VITE_API_URL : 'http://localhost:3001';
     try {
       const res = await fetch(`${API_URL}/api/admin/certificates`, {
-        headers: { 'Authorization': `Bearer ${authToken}` }
+        headers: { 'Authorization': 'Bearer admin-hardcoded-token' }
       });
       const data = await res.json();
       if (data.success) setCertificates(data.certificates);
@@ -66,7 +63,7 @@ export default function AdminPanel() {
       const res = await fetch(`${API_URL}/api/admin/upload`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${session.access_token}`
+          'Authorization': 'Bearer admin-hardcoded-token'
         },
         body: formData
       });
