@@ -8,5 +8,11 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.error("Please configure your .env file.");
 }
 
-// Initialize the Supabase client
-export const supabase = createClient(supabaseUrl || '', supabaseAnonKey || '');
+// Initialize the Supabase client safely
+export const supabase = supabaseUrl && supabaseAnonKey 
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : { 
+      auth: { getSession: async () => ({ data: { session: null } }), onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }) },
+      from: () => ({ select: () => ({ eq: () => ({ single: async () => ({ data: null, error: null }) }) }) })
+    };
+
