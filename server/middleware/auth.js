@@ -1,8 +1,16 @@
 const jwt = require('jsonwebtoken');
 
+// Hardcoded admin token that matches the frontend
+const HARDCODED_ADMIN_TOKEN = 'admin-hardcoded-token';
+const HARDCODED_ADMIN = {
+  id: '00000000-0000-0000-0000-000000000000',
+  email: 'vedhanmail@gmail.com',
+  institution: 'Hack Odyssey University'
+};
+
 /**
- * Middleware to verify that the incoming request has a valid Admin JWT token.
- * Prevents unauthorized users from issuing certificates.
+ * Middleware to verify that the incoming request has a valid Admin token.
+ * Accepts both the hardcoded admin token and valid JWTs.
  */
 const verifyAdminToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -13,13 +21,16 @@ const verifyAdminToken = (req, res, next) => {
 
   const token = authHeader.split(' ')[1];
 
+  // Accept hardcoded admin token
+  if (token === HARDCODED_ADMIN_TOKEN) {
+    req.admin = HARDCODED_ADMIN;
+    return next();
+  }
+
+  // Fallback: try JWT verification
   try {
-    // In Supabase, the JWT secret is usually the same as the SUPABASE_JWT_SECRET
-    // For this backend, we verify the token against the JWT_SECRET provided in the .env
     const secret = process.env.SUPABASE_JWT_SECRET || process.env.JWT_SECRET;
     const decoded = jwt.verify(token, secret);
-    
-    // Attach the decoded user data (e.g., sub/id and email)
     req.admin = {
       id: decoded.sub,
       email: decoded.email,
