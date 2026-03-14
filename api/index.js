@@ -1,10 +1,11 @@
-require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 
+// Provide a dummy require for Supabase credentials since Vercel automatically injects env variables
+require('dotenv').config();
+
 const app = express();
 
-// Middleware
 const allowedOrigins = [
   'http://localhost:5173',
   process.env.FRONTEND_URL,
@@ -22,24 +23,22 @@ app.use(cors({
   },
   credentials: true
 }));
+
 app.use(express.json());
 
 // Basic health check
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok', message: 'CertChain Secure API running' });
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', message: 'CertChain Vercel API running' });
 });
 
-const authRoutes = require('./routes/authRoutes');
-const adminRoutes = require('./routes/adminRoutes');
-const verifyRoutes = require('./routes/verifyRoutes');
+// Import backend routes
+const authRoutes = require('../server/routes/authRoutes');
+const adminRoutes = require('../server/routes/adminRoutes');
+const verifyRoutes = require('../server/routes/verifyRoutes');
 
-// Routes Attached
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/verify', verifyRoutes);
 
-const PORT = process.env.PORT || 3001;
-
-app.listen(PORT, () => {
-  console.log(`[🚀 SERVER] CertChain Backend running on port ${PORT}`);
-});
+// Export the app for Vercel Serverless Functions
+module.exports = app;

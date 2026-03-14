@@ -1,6 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
+const os = require('os');
 const { generateFileHash } = require('../utils/hashUtils');
 const { verifyAdminToken } = require('../middleware/auth');
 const { supabaseAdmin } = require('../utils/supabaseServer');
@@ -11,7 +12,7 @@ const router = express.Router();
 // --------------------------------------------------------------------------
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/admin_originals/');
+    cb(null, os.tmpdir());
   },
   filename: (req, file, cb) => {
     // Unique name to avoid clashes

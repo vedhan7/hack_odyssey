@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const { generateFileHash } = require('../utils/hashUtils');
 const { supabaseAdmin } = require('../utils/supabaseServer');
 
@@ -12,7 +13,7 @@ const router = express.Router();
 // --------------------------------------------------------------------------
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/verification_temps/');
+    cb(null, os.tmpdir());
   },
   filename: (req, file, cb) => {
     cb(null, 'temp-' + Date.now() + path.extname(file.originalname));
