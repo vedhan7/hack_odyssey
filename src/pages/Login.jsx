@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import toast from 'react-hot-toast';
-import { LogIn, Building2, GraduationCap } from 'lucide-react';
+import { Building2, GraduationCap } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
