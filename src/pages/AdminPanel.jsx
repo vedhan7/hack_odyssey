@@ -32,7 +32,7 @@ export default function AdminPanel() {
   };
 
   const fetchCertificates = async () => {
-    const API_URL = import.meta.env.VITE_API_URL !== undefined ? import.meta.env.VITE_API_URL : 'http://localhost:3001';
+    const API_URL = import.meta.env.PROD ? "" : "http://localhost:3001";
     try {
       const res = await fetch(`${API_URL}/api/admin/certificates`, {
         headers: { 'Authorization': 'Bearer admin-hardcoded-token' }
@@ -56,8 +56,8 @@ export default function AdminPanel() {
     formData.append('studentName', studentName);
     formData.append('degree', degree);
 
-    // If it's empty string we are on the same domain (Vercel)
-    const API_URL = import.meta.env.VITE_API_URL !== undefined ? import.meta.env.VITE_API_URL : 'http://localhost:3001';
+    // In production (Vercel), we use relative paths (''). In local dev, we hit the Express server.
+    const API_URL = import.meta.env.PROD ? "" : "http://localhost:3001";
     
     try {
       const res = await fetch(`${API_URL}/api/admin/upload`, {
