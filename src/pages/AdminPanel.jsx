@@ -34,7 +34,8 @@ export default function AdminPanel() {
   };
 
   const fetchCertificates = async (authToken) => {
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+    // If it's empty string we are on the same domain (Vercel)
+    const API_URL = import.meta.env.VITE_API_URL !== undefined ? import.meta.env.VITE_API_URL : 'http://localhost:3001';
     try {
       const res = await fetch(`${API_URL}/api/admin/certificates`, {
         headers: { 'Authorization': `Bearer ${authToken}` }
@@ -58,7 +59,9 @@ export default function AdminPanel() {
     formData.append('studentName', studentName);
     formData.append('degree', degree);
 
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+    // If it's empty string we are on the same domain (Vercel)
+    const API_URL = import.meta.env.VITE_API_URL !== undefined ? import.meta.env.VITE_API_URL : 'http://localhost:3001';
+    
     try {
       const res = await fetch(`${API_URL}/api/admin/upload`, {
         method: 'POST',

@@ -32,7 +32,8 @@ export default function VerifyPortal() {
     const formData = new FormData();
     formData.append('document', file);
 
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+    // If it's empty string we are on the same domain (Vercel)
+    const API_URL = import.meta.env.VITE_API_URL !== undefined ? import.meta.env.VITE_API_URL : 'http://localhost:3001';
     try {
       const res = await fetch(`${API_URL}/api/verify`, {
         method: 'POST',
