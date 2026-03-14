@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { Upload, ShieldCheck, FileText } from 'lucide-react';
 import { useWallet } from '../hooks/useWallet';
@@ -23,7 +23,7 @@ export default function IssueCertForm({ onIssueSuccess }) {
     cgpa: '',
   });
 
-  useState(() => {
+  useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
     });
